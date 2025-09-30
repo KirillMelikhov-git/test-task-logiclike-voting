@@ -7,9 +7,9 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Импортируем БД и роуты (require для совместимости с JS моделями)
+// Импортируем БД и роуты
 const { sequelize } = require('../db/models');
-const ideasRouter = require('./routes/ideas');
+import ideasRouter from './routes/ideas';
 
 // Middleware
 app.use(cors());

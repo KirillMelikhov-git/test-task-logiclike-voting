@@ -1,16 +1,17 @@
-const express = require('express');
-const router = express.Router();
-const { Idea, Vote, sequelize } = require('../../db/models');
-const { getClientIp } = require('../utils/getClientIp');
-const { Op } = require('sequelize');
+import { Router, Request, Response } from 'express';
+import { getClientIp } from '../utils/getClientIp';
+import { Models } from '../types/database';
 
+const { Idea, Vote, sequelize } = require('../../db/models') as Models;
+
+const router = Router();
 const MAX_VOTES_PER_IP = 10;
 
 /**
  * GET /api/ideas
  * Получить список всех идей, отсортированных по количеству голосов
  */
-router.get('/', async (req, res) => {
+router.get('/', async (req: Request, res: Response) => {
   try {
     const clientIp = getClientIp(req);
 
@@ -48,12 +49,18 @@ router.get('/', async (req, res) => {
  * POST /api/ideas/:id/vote
  * Проголосовать за идею
  */
-router.post('/:id/vote', async (req, res) => {
+router.post('/:id/vote', async (req: Request, res: Response) => {
   const transaction = await sequelize.transaction();
   
   try {
     const ideaId = parseInt(req.params.id);
     const clientIp = getClientIp(req);
+
+    // Валидация ID
+    if (isNaN(ideaId)) {
+      await transaction.rollback();
+      return res.status(400).json({ error: 'Некорректный ID идеи' });
+    }
 
     // Проверяем, существует ли идея
     const idea = await Idea.findByPk(ideaId);
@@ -122,7 +129,7 @@ router.post('/:id/vote', async (req, res) => {
  * GET /api/ideas/votes/remaining
  * Получить количество оставшихся голосов для данного IP
  */
-router.get('/votes/remaining', async (req, res) => {
+router.get('/votes/remaining', async (req: Request, res: Response) => {
   try {
     const clientIp = getClientIp(req);
     
@@ -143,4 +150,4 @@ router.get('/votes/remaining', async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

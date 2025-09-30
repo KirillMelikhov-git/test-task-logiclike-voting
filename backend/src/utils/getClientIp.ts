@@ -1,9 +1,11 @@
+import { Request } from 'express';
+
 /**
  * Определяет IP-адрес клиента с учетом работы за reverse-proxy
- * @param {Request} req - Express Request объект
- * @returns {string} IP-адрес клиента
+ * @param req - Express Request объект
+ * @returns IP-адрес клиента
  */
-function getClientIp(req) {
+export function getClientIp(req: Request): string {
   // Проверяем заголовок X-Forwarded-For (для работы за reverse-proxy)
   const forwardedFor = req.headers['x-forwarded-for'];
   
@@ -26,5 +28,3 @@ function getClientIp(req) {
   // Если заголовков нет, берем IP из connection
   return req.socket.remoteAddress || '0.0.0.0';
 }
-
-module.exports = { getClientIp };
