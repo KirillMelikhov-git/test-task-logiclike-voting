@@ -46,8 +46,6 @@ async function startServer() {
     app.listen(PORT, () => {
       console.log(`\n🚀 Сервер запущен на http://localhost:${PORT}`);
       console.log(`📊 API доступно на http://localhost:${PORT}/api`);
-      console.log('\n💡 Для инициализации БД выполните:');
-      console.log('   npm run db:setup');
     });
   } catch (error) {
     console.error('Ошибка при запуске сервера:', error);
